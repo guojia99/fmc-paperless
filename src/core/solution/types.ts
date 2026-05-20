@@ -31,6 +31,7 @@ export interface CompiledNodeInfo {
   moves: string;
   bracketed: boolean;
   label: string;
+  annotation: string;
   stepCount: number;
   cumulativeCount: number;
 }

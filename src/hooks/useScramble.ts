@@ -1,22 +1,5 @@
-import '@/lib/cstimer-shim';
 import { useCallback, useState } from 'react';
-
-interface ScrambleGen {
-  getScramble: (type: string) => string;
-  getImage: (scramble: string, type: string) => string;
-}
-
-let modulePromise: Promise<ScrambleGen> | null = null;
-
-async function loadCstimer(): Promise<ScrambleGen> {
-  if (!modulePromise) {
-    modulePromise = import('cstimer_module').then((m) => {
-      const mod = (m.default ?? m) as unknown as ScrambleGen;
-      return mod;
-    });
-  }
-  return modulePromise;
-}
+import { getImage, getScramble } from '@/lib/cstimer-worker';
 
 export interface GeneratedScramble {
   text: string;
@@ -24,15 +7,13 @@ export interface GeneratedScramble {
 }
 
 export async function generateScramble(): Promise<GeneratedScramble> {
-  const cs = await loadCstimer();
-  const text = cs.getScramble('333');
-  const image = cs.getImage(text, '333');
+  const text = await getScramble('333');
+  const image = await getImage(text, '333');
   return { text, image };
 }
 
 export async function imageForScramble(text: string): Promise<string> {
-  const cs = await loadCstimer();
-  return cs.getImage(text, '333');
+  return getImage(text, '333');
 }
 
 /**

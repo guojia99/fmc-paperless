@@ -6,7 +6,7 @@ import type { CyclingState } from '@/core/keyboard';
 import { resetCycling, resolveCycling } from '@/core/keyboard';
 import type { Face, Modifier } from '@/core/moves/types';
 import { AXIS_MOVES } from '@/core/moves/types';
-import { parseMoves, serializeMove } from '@/core/moves';
+import { hasInlineBrackets, parseMoves, serializeMove } from '@/core/moves';
 import type {
   Insertion,
   NodeColor,
@@ -570,6 +570,22 @@ export const useSessionStore = create<SessionState>()(
             if (!chain) return s;
             const node = findNode(chain.tree, id);
             if (!node) return s;
+            const m = node.moves.trim();
+            if (m && !hasInlineBrackets(m)) {
+              if (node.bracketed) {
+                return patchChainInSession(s, chain.id, (c) => ({
+                  ...c,
+                  tree: updateNodeOp(c.tree, id, { bracketed: false }),
+                }));
+              }
+              return patchChainInSession(s, chain.id, (c) => ({
+                ...c,
+                tree: updateNodeOp(c.tree, id, {
+                  moves: `(${m})`,
+                  bracketed: false,
+                }),
+              }));
+            }
             return patchChainInSession(s, chain.id, (c) => ({
               ...c,
               tree: updateNodeOp(c.tree, id, { bracketed: !node.bracketed }),
@@ -723,7 +739,15 @@ export const useSessionStore = create<SessionState>()(
           return;
         }
         if (action === '(' || action === ')') {
-          state.toggleBracket(nodeId);
+          const trimmed = node.moves.trimEnd();
+          const paren = action;
+          const next =
+            trimmed.length === 0
+              ? paren
+              : paren === '('
+                ? `${trimmed} (`
+                : `${trimmed})`;
+          state.setNodeMoves(nodeId, next);
           set({ cycling: { nodeId: null, state: resetCycling() } });
           return;
         }

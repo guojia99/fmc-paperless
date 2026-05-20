@@ -4,6 +4,7 @@ import {
   compileBranch,
   cumulativeCountsForPath,
   findNode,
+  formatFirstNodePreview,
   getPath,
   leafFromNode,
   stepCount,
@@ -83,6 +84,10 @@ export function ChainView({
       : `chain-priority-${chain.priority}`;
 
   const showInsertions = chain.insertions.length > 0;
+  const collapsedPreview = useMemo(
+    () => formatFirstNodePreview(chain.tree),
+    [chain.tree],
+  );
 
   return (
     <section
@@ -102,6 +107,17 @@ export function ChainView({
         onToggleCompiled={() => setShowCompiled((v) => !v)}
         onActivate={() => setActiveChain(chain.id)}
       />
+
+      {!chain.isExpanded && (
+        <p
+          className="mt-2 break-all rounded-lg border border-primary-100 bg-white/70 px-2 py-1.5 font-mono text-sm text-slate-700"
+          title="首步预览"
+        >
+          {collapsedPreview ?? (
+            <span className="italic text-slate-400">尚无步骤</span>
+          )}
+        </p>
+      )}
 
       {chain.isExpanded && (
         <div className="mt-3">

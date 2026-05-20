@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Header } from './Header';
+import { ScrambleBar } from '@/components/scramble/ScrambleBar';
 import { SideDrawer } from './SideDrawer';
 import { InsertionPicker } from '@/components/solution-chain/InsertionPicker';
 import { VirtualKeyboard } from '@/components/virtual-keyboard/VirtualKeyboard';
@@ -24,6 +25,7 @@ export function AppShell({ children }: AppShellProps) {
   return (
     <div className="flex h-screen flex-col bg-primary-50">
       <Header />
+      <ScrambleBar />
       <div
         className={cn(
           'flex min-h-0 flex-1',

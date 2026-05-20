@@ -61,7 +61,7 @@ body {
     hover:bg-primary-100;
 }
 .btn-danger {
-  @apply border-rose-200 text-rose-700 hover:bg-rose-50;
+  @apply border-rose-600 bg-rose-600 text-white hover:bg-rose-700 hover:border-rose-700 active:bg-rose-800;
 }
 .btn-icon {
   @apply h-8 w-8 rounded-lg p-0;
@@ -147,5 +147,45 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-/* SVG scrambles from cstimer come without natural sizing */
-.scramble-image svg { width: 100%; height: auto; }
+/* Scramble image: SVG → PNG in .svg-container */
+.svg-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.svg-container img {
+  display: block;
+  box-sizing: border-box;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: min(280px, 55vh);
+  object-fit: contain;
+}
+
+.scramble-image--inline {
+  flex-shrink: 0;
+  width: 13.75rem;
+  max-width: 13.75rem;
+}
+
+.scramble-image--inline .svg-container img {
+  max-width: 13.75rem;
+  max-height: min(5.625rem, 40vh);
+}
+
+.scramble-image--placeholder {
+  width: 13.75rem;
+  height: 5.625rem;
+  flex-shrink: 0;
+}

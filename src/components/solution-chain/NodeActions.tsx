@@ -32,7 +32,6 @@ const COLOR_BTN: Record<NodeColor, string> = {
 
 export function NodeActions({
   nodeId,
-  bracketed,
   color,
   isOnlyTopLevel,
   onToggleAnnotation,
@@ -105,11 +104,11 @@ export function NodeActions({
       </button>
       <button
         type="button"
-        className={cn('btn text-xs', bracketed && 'btn-primary')}
+        className="btn btn-ghost text-xs"
         onClick={() => toggleBracket(nodeId)}
-        title={bracketed ? '取消括号 (转换为正序)' : '加上括号 (转换为逆序)'}
+        title="为整段步骤加上或去掉外层括号（也可用键盘 ( ) 分段）"
       >
-        <IconBracket size={12} /> {bracketed ? '反向' : '正向'}
+        <IconBracket size={12} /> 括号
       </button>
       <button
         type="button"

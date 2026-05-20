@@ -316,4 +316,14 @@ describe('compileBranch — spec §7 worked example', () => {
     // inverse of "U2 Fw' U2 F' U2 Fw'" = "Fw U2 F U2 Fw U2"
     expect(result.text).toBe('Fw U2 F U2 Fw U2');
   });
+
+  it('compiles inline mixed forward and inverse in one node', () => {
+    const nodes: SolutionNode[] = [
+      createNode({ moves: "(U D') R (D2 B' R) R2", bracketed: false }),
+    ];
+    const result = compileBranch(nodes, []);
+    expect(result.error).toBeUndefined();
+    expect(result.nodes[0].stepCount).toBe(7);
+    expect(result.moveCount).toBeGreaterThan(0);
+  });
 });

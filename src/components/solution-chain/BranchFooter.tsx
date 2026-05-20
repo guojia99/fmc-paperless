@@ -1,4 +1,4 @@
-import type { CompiledResult } from '@/core/solution';
+import { formatCompiledNodeLine, type CompiledResult } from '@/core/solution';
 import { useSessionStore, selectActiveSession } from '@/store/sessionStore';
 import { useUIStore } from '@/store/uiStore';
 import { cn } from '@/lib/cn';
@@ -23,11 +23,7 @@ export function BranchFooter({ compiled }: BranchFooterProps) {
 
   const handlePullToBoard = () => {
     if (!session) return;
-    const lines = compiled.nodes.map((n) => {
-      const moves = n.bracketed ? `(${n.moves})` : n.moves;
-      const label = n.label ? ` // ${n.label}` : '';
-      return `${moves}${label}  ${n.stepCount}/${n.cumulativeCount}`;
-    });
+    const lines = compiled.nodes.map((n) => formatCompiledNodeLine(n));
     const finalLine = `\n${compiled.text}  (${compiled.moveCount})`;
     setArrangement([...lines, finalLine].join('\n'));
     openDrawer('arrangement');

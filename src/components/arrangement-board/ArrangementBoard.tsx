@@ -3,6 +3,7 @@ import { selectActiveSession, useSessionStore } from '@/store/sessionStore';
 import {
   compileBranch,
   findNode,
+  formatCompiledNodeLine,
   getAllLeafPaths,
   getPath,
   leafFromNode,
@@ -12,11 +13,7 @@ import type { SolutionChain } from '@/types';
 
 function nodesToLines(nodes: SolutionNode[], insertions: Insertion[]): string {
   const compiled = compileBranch(nodes, insertions);
-  const lines = compiled.nodes.map((n) => {
-    const moves = n.bracketed ? `(${n.moves})` : n.moves;
-    const label = n.label ? ` // ${n.label}` : '';
-    return `${moves}${label}  ${n.stepCount}/${n.cumulativeCount}`;
-  });
+  const lines = compiled.nodes.map((n) => formatCompiledNodeLine(n));
   lines.push('');
   lines.push(`${compiled.text}  (${compiled.moveCount})`);
   return lines.join('\n');

@@ -44,3 +44,10 @@ export {
 } from './insertions';
 
 export { compileBranch } from './compiler';
+export {
+  formatAnnotationSuffix,
+  formatCompiledNodeLine,
+  formatFirstNodePreview,
+  formatMovesExport,
+  formatNodeExportLine,
+} from './export-format';

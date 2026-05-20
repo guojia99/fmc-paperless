@@ -1,7 +1,9 @@
 import type { Move } from '@/core/moves/types';
 import {
-  inverseSequence,
+  combineSegmentMoves,
+  hasInlineBrackets,
   parseMoves,
+  parseMovesWithBrackets,
   serializeMoves,
   simplify,
 } from '@/core/moves';
@@ -17,10 +19,12 @@ import { resolveInsertions } from './insertions';
  * Compile an ordered list of nodes (a single branch from root through leaf)
  * into a final solution string, following FMC bracket conventions:
  *
- *   final = simplify( [ all naked nodes, in order ]
- *                   ++ [ inverse of each bracketed node, in REVERSE order ] )
+ *   final = simplify( [ all naked segments, in order ]
+ *                   ++ [ inverse of each parenthesized group, in REVERSE order ] )
  *
- * Insertions are substituted into each node's raw move text before parsing.
+ * Each node may use inline `( ... )` groups mixed with naked moves, e.g.
+ * `(U D') R (D2 B' R) R2`. Legacy `node.bracketed` without inline parens
+ * treats the whole node as one inverse group.
  */
 export function compileBranch(
   nodes: SolutionNode[],
@@ -38,40 +42,45 @@ export function compileBranch(
       firstError = `${node.label || node.id}: ${resErr}`;
     }
 
-    let parsed: Move[];
+    let stepCount = 0;
+
     try {
-      parsed = parseMoves(resolved);
+      if (hasInlineBrackets(resolved)) {
+        const segments = parseMovesWithBrackets(resolved);
+        naked.push(...segments.naked);
+        for (const group of segments.bracketedGroups) {
+          bracketedSegments.push(group);
+        }
+        stepCount = segments.moveCount;
+      } else if (node.bracketed && resolved.trim()) {
+        const parsed = parseMoves(resolved);
+        bracketedSegments.push(parsed);
+        stepCount = parsed.length;
+      } else if (resolved.trim()) {
+        const parsed = parseMoves(resolved);
+        naked.push(...parsed);
+        stepCount = parsed.length;
+      }
     } catch (err) {
       if (!firstError) {
         const msg = err instanceof Error ? err.message : '解析失败';
         firstError = `${node.label || node.id}: ${msg}`;
       }
-      parsed = [];
     }
 
-    if (node.bracketed) {
-      bracketedSegments.push(parsed);
-    } else {
-      naked.push(...parsed);
-    }
-
-    cumulative += parsed.length;
+    cumulative += stepCount;
     nodeInfos.push({
       id: node.id,
       moves: node.moves,
       bracketed: node.bracketed,
       label: node.label,
-      stepCount: parsed.length,
+      annotation: node.annotation,
+      stepCount,
       cumulativeCount: cumulative,
     });
   }
 
-  const inverted: Move[] = [];
-  for (let i = bracketedSegments.length - 1; i >= 0; i--) {
-    inverted.push(...inverseSequence(bracketedSegments[i]).moves);
-  }
-
-  const combined: Move[] = [...naked, ...inverted];
+  const combined = combineSegmentMoves(naked, bracketedSegments);
   const simplified = simplify(combined);
 
   return {

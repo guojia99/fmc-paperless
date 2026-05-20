@@ -107,10 +107,6 @@ export function TreeNodeRow({
           </button>
         )}
 
-        {node.bracketed && (
-          <span className="font-mono text-base font-bold text-primary-600">(</span>
-        )}
-
         {editingMoves ? (
           <input
             ref={inputRef}
@@ -144,10 +140,6 @@ export function TreeNodeRow({
               </span>
             )}
           </div>
-        )}
-
-        {node.bracketed && (
-          <span className="font-mono text-base font-bold text-primary-600">)</span>
         )}
 
         <span className="ml-auto whitespace-nowrap font-mono text-xs text-slate-500">

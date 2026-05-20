@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import type { NodeColor, Priority, SolutionNode } from './types';
-import { parseMoves } from '@/core/moves';
+import { hasInlineBrackets, parseMoves, parseMovesWithBrackets } from '@/core/moves';
 
 export function createNode(partial: Partial<SolutionNode> = {}): SolutionNode {
   return {
@@ -78,6 +78,9 @@ export function getAllLeafPaths(root: SolutionNode): SolutionNode[][] {
 function countMovesInString(moves: string): number {
   if (!moves || !moves.trim()) return 0;
   try {
+    if (hasInlineBrackets(moves)) {
+      return parseMovesWithBrackets(moves).moveCount;
+    }
     return parseMoves(moves).length;
   } catch {
     return 0;
