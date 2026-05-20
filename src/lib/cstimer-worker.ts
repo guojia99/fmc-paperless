@@ -5,13 +5,15 @@
  * exports unset, which previously caused `getScramble is not a function`.
  *
  * The official README explicitly recommends running it as a classic Worker
- * in browsers. We instantiate it with `new Worker(new URL(...), { type: 'classic' })`
- * and expose a Promise-based message bridge that mirrors the worker protocol:
+ * in browsers. Load the raw file via `?url` so Vite emits it as a static asset
+ * instead of bundling it (bundling adds `export` and breaks classic workers).
  *
  *   postMessage([msgid, type, args])  →  onmessage [msgid, type, result]
  *
  * Supported types we use: 'scramble' (args: [scrType]) and 'image' (args: [scr, scrType]).
  */
+
+import cstimerModuleUrl from 'cstimer_module/cstimer_module.js?url';
 
 type WorkerMessage = [msgid: number, type: string, payload: unknown];
 
@@ -26,10 +28,7 @@ const pending = new Map<number, PendingCall>();
 
 function getWorker(): Worker {
   if (worker) return worker;
-  worker = new Worker(
-    new URL('cstimer_module/cstimer_module.js', import.meta.url),
-    { type: 'classic' },
-  );
+  worker = new Worker(cstimerModuleUrl, { type: 'classic' });
   worker.onmessage = (e: MessageEvent<WorkerMessage>) => {
     const [id, , result] = e.data;
     const call = pending.get(id);
