@@ -7,13 +7,13 @@ export interface GeneratedScramble {
 }
 
 export async function generateScramble(): Promise<GeneratedScramble> {
-  const text = await getScramble('333');
-  const image = await getImage(text, '333');
+  const text = await getScramble('333fm');
+  const image = await getImage(text, '333fm');
   return { text, image };
 }
 
 export async function imageForScramble(text: string): Promise<string> {
-  return getImage(text, '333');
+  return getImage(text, '333fm');
 }
 
 /**

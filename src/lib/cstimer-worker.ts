@@ -58,10 +58,10 @@ function call<T>(type: string, args: unknown[]): Promise<T> {
   });
 }
 
-export function getScramble(type = '333'): Promise<string> {
+export function getScramble(type = '333fm'): Promise<string> {
   return call<string>('scramble', [type]);
 }
 
-export function getImage(scramble: string, type = '333'): Promise<string> {
+export function getImage(scramble: string, type = '333fm'): Promise<string> {
   return call<string>('image', [scramble, type]);
 }
