@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useSessionStore } from '@/store/sessionStore';
 import { useScramble } from '@/hooks/useScramble';
 import { cn } from '@/lib/cn';
@@ -32,11 +33,24 @@ export function SessionsMenu() {
   const { generate } = useScramble();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number; right: number }>({ top: 0, left: 0, right: 0 });
+
+  useEffect(() => {
+    if (!open) return;
+    const btnEl = ref.current?.querySelector('button');
+    if (!btnEl) return;
+    const rect = btnEl.getBoundingClientRect();
+    setMenuPos({ top: rect.bottom + 4, left: rect.left, right: window.innerWidth - rect.right });
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
     const onClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      if (
+        ref.current && !ref.current.contains(e.target as Node) &&
+        menuRef.current && !menuRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     };
@@ -68,8 +82,12 @@ export function SessionsMenu() {
         </span>
         <IconChevronDown size={14} />
       </button>
-      {open && (
-        <div className="absolute right-0 top-full z-30 mt-1 w-80 max-h-[60vh] overflow-auto rounded-xl border border-primary-100 bg-white p-2 shadow-lg">
+      {open && typeof document !== 'undefined' && createPortal(
+        <div
+          ref={menuRef}
+          className="fixed z-50 w-80 max-h-[60vh] overflow-auto rounded-xl border border-primary-100 bg-white p-2 shadow-lg"
+          style={{ top: menuPos.top, left: menuPos.left, right: menuPos.right }}
+        >
           <button
             type="button"
             className="btn btn-primary mb-2 w-full"
@@ -120,7 +138,8 @@ export function SessionsMenu() {
               ))}
             </ul>
           )}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );
