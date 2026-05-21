@@ -181,6 +181,7 @@ export interface SessionState {
   setChainPriority: (chainId: string, priority: Priority) => void;
   setChainColor: (chainId: string, color: NodeColor) => void;
   toggleChainExpand: (chainId: string) => void;
+  collapseAllChains: () => void;
 
   setActiveNode: (id: string) => void;
   setNodeMoves: (id: string, moves: string) => void;
@@ -515,6 +516,15 @@ export const useSessionStore = create<SessionState>()(
           ),
         );
       },
+      collapseAllChains: () => {
+        set((state) =>
+          patchActive(state, (s) => ({
+            ...s,
+            chains: s.chains.map((c) => ({ ...c, isExpanded: false })),
+            updatedAt: Date.now(),
+          })),
+        );
+      },
 
       setActiveNode: (id) => {
         set((state) =>
@@ -756,13 +766,11 @@ export const useSessionStore = create<SessionState>()(
             const ph = '#';
             state.insertPlaceholder(nodeId, ph);
             state.addInsertion(chain.id, { placeholder: ph });
-          } else if (chain.insertions.length > 1) {
+          } else {
             useUIStore.getState().openInsertionPicker({
               nodeId,
               chainId: chain.id,
             });
-          } else {
-            state.insertPlaceholder(nodeId, chain.insertions[0].placeholder);
           }
           set({ cycling: { nodeId: null, state: resetCycling() } });
           return;

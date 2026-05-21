@@ -4,6 +4,8 @@ import { ScrambleBar } from '@/components/scramble/ScrambleBar';
 import { SideDrawer } from './SideDrawer';
 import { InsertionPicker } from '@/components/solution-chain/InsertionPicker';
 import { VirtualKeyboard } from '@/components/virtual-keyboard/VirtualKeyboard';
+import { KeyboardConfigurator } from '@/components/virtual-keyboard/KeyboardConfigurator';
+import { useUIStore } from '@/store/uiStore';
 import { useMoveInputKeyboardDismiss } from '@/hooks/useMoveInputKeyboard';
 import { useKeyboardStore } from '@/store/keyboardStore';
 import { cn } from '@/lib/cn';
@@ -17,6 +19,7 @@ export function AppShell({ children }: AppShellProps) {
   useMoveInputKeyboardDismiss();
   const position = useKeyboardStore((s) => s.position);
   const show = useKeyboardStore((s) => s.show);
+  const configuringKeyboard = useUIStore((s) => s.configuringKeyboard);
 
   const isSideKb = position === 'left' || position === 'right';
   const isHidden = position === 'hidden';
@@ -24,8 +27,11 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="flex h-screen flex-col bg-primary-50">
-      <Header />
-      <ScrambleBar />
+      <div className="sticky top-0 z-30 shrink-0 shadow-sm">
+        <Header />
+        <ScrambleBar />
+      </div>
+
       <div
         className={cn(
           'flex min-h-0 flex-1',
@@ -53,7 +59,7 @@ export function AppShell({ children }: AppShellProps) {
       </div>
 
       {!isHidden && !isSideKb && !isFloat && (
-        <div className="flex-shrink-0 border-t border-primary-100 bg-white/95 backdrop-blur-sm">
+        <div className="vk-bar flex-shrink-0 border-t border-primary-100 bg-white/95 backdrop-blur-sm">
           <VirtualKeyboard orientation="horizontal" />
         </div>
       )}
@@ -66,6 +72,7 @@ export function AppShell({ children }: AppShellProps) {
       )}
 
       <InsertionPicker />
+      {configuringKeyboard && <KeyboardConfigurator />}
 
       {isHidden && (
         <button

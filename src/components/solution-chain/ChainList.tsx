@@ -1,11 +1,13 @@
 import { selectActiveSession, useSessionStore } from '@/store/sessionStore';
 import { useUIStore } from '@/store/uiStore';
+import { ChevronsUp } from 'lucide-react';
 import { IconPlus } from '@/components/common/Icons';
 import { ChainView } from './ChainView';
 
 export function ChainList() {
   const session = useSessionStore(selectActiveSession);
   const newChain = useSessionStore((s) => s.newChain);
+  const collapseAllChains = useSessionStore((s) => s.collapseAllChains);
   const toggleDrawer = useUIStore((s) => s.toggleDrawer);
 
   if (!session) return null;
@@ -20,6 +22,15 @@ export function ChainList() {
           </span>
         </h1>
         <div className="flex items-center gap-1">
+          <button
+            type="button"
+            className="btn text-xs"
+            onClick={() => collapseAllChains()}
+            disabled={session.chains.every((c) => !c.isExpanded)}
+            title="收起全部解法链"
+          >
+            <ChevronsUp size={14} /> 全部收起
+          </button>
           <button
             type="button"
             className="btn text-xs"

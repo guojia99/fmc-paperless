@@ -154,7 +154,6 @@ export function TreeNodeRow({
       {isActive && isChainActive && (
         <NodeActions
           nodeId={node.id}
-          bracketed={node.bracketed}
           color={node.color}
           isOnlyTopLevel={isOnlyTopLevel}
           hasAnnotation={!!node.annotation}

@@ -4,7 +4,6 @@ import { useUIStore } from '@/store/uiStore';
 import { getVariantActions } from '@/core/keyboard';
 import { cn } from '@/lib/cn';
 import { IconEyeOff, IconGear } from '@/components/common/Icons';
-import { KeyboardConfigurator } from './KeyboardConfigurator';
 import { KeyboardKey } from './KeyboardKey';
 
 interface VirtualKeyboardProps {
@@ -15,7 +14,6 @@ interface VirtualKeyboardProps {
 export function VirtualKeyboard({ orientation, compact }: VirtualKeyboardProps) {
   const layout = useKeyboardStore((s) => s.layout);
   const hide = useKeyboardStore((s) => s.hide);
-  const configuring = useUIStore((s) => s.configuringKeyboard);
   const setConfiguring = useUIStore((s) => s.setConfiguringKeyboard);
   const { press } = useKeyboardInput();
 
@@ -89,7 +87,6 @@ export function VirtualKeyboard({ orientation, compact }: VirtualKeyboardProps) 
         </button>
       </div>
 
-      {configuring && <KeyboardConfigurator />}
     </div>
   );
 }

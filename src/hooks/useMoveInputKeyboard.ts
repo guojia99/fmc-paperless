@@ -6,6 +6,7 @@ const KEEP_KEYBOARD_SELECTOR = [
   '.node-actions',
   '[data-chain-header]',
   '[data-virtual-keyboard]',
+  '[data-keyboard-configurator]',
   '[data-insertion-picker]',
   '.kb-key',
 ].join(',');

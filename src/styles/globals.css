@@ -189,3 +189,23 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 5.625rem;
   flex-shrink: 0;
 }
+
+/* Virtual keyboard: full width on phone, capped and centered on tablet+ */
+.vk-bar {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.vk-bar > [data-virtual-keyboard] {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .vk-bar > [data-virtual-keyboard] {
+    max-width: 42rem;
+  }
+}

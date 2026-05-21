@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react';
+import { RefreshCw } from 'lucide-react';
 import { selectActiveSession, useSessionStore } from '@/store/sessionStore';
 import { useScramble } from '@/hooks/useScramble';
 import { svgToPngUrl } from '@/lib/svg-to-png';
 import { cn } from '@/lib/cn';
-import {
-  IconEdit,
-  IconEye,
-  IconEyeOff,
-  IconRefresh,
-} from '@/components/common/Icons';
+import { IconEdit, IconEye, IconEyeOff } from '@/components/common/Icons';
 
 export function ScrambleBar() {
   const session = useSessionStore(selectActiveSession);
@@ -22,6 +18,8 @@ export function ScrambleBar() {
 
   const scrambleImage = session?.scramble.image ?? null;
   const scrambleText = session?.scramble.text ?? '';
+  const timerRunning = session?.timer.isRunning ?? false;
+  const scrambleLocked = timerRunning;
 
   useEffect(() => {
     if (!scrambleImage) {
@@ -47,6 +45,7 @@ export function ScrambleBar() {
   }, [scrambleImage]);
 
   const startEdit = () => {
+    if (scrambleLocked) return;
     setDraft(scrambleText);
     setEditing(true);
   };
@@ -55,6 +54,7 @@ export function ScrambleBar() {
   const { scramble } = session;
 
   const handleGenerate = async () => {
+    if (scrambleLocked) return;
     const result = await generate();
     if (result) {
       setScrambleText(result.text, result.image);
@@ -79,10 +79,14 @@ export function ScrambleBar() {
       className="flex-shrink-0 border-b border-primary-100 bg-white/90 px-3 py-2 backdrop-blur-sm"
       aria-label="打乱"
     >
-      <div className="mx-auto flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-3">
-        {/* 打乱图 */}
-        <div className="flex shrink-0 items-start gap-2">
-          {showImage ? (
+      <div
+        className={cn(
+          'mx-auto flex flex-col gap-2',
+          showImage ? 'sm:flex-row sm:items-start sm:gap-3' : '',
+        )}
+      >
+        {showImage && (
+          <div className="flex shrink-0 items-start">
             <div
               className={cn(
                 'scramble-image--inline rounded-lg border border-primary-200 bg-white p-1',
@@ -92,27 +96,9 @@ export function ScrambleBar() {
                 <img src={pngData!} alt={scramble.text || '打乱图'} />
               </div>
             </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                if (scramble.image) toggleHidden();
-              }}
-              className={cn(
-                'scramble-image--placeholder flex items-center justify-center rounded-lg',
-                'border border-dashed border-primary-200 bg-primary-50/50',
-                'text-primary-500 hover:bg-primary-50',
-              )}
-              title={scramble.image ? '显示打乱图' : '尚无打乱图'}
-              aria-label="显示打乱图"
-              disabled={!scramble.image}
-            >
-              <IconEye size={24} />
-            </button>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* 打乱文本 */}
         <div className="min-w-0 flex-1">
           {editing ? (
             <input
@@ -145,37 +131,35 @@ export function ScrambleBar() {
               {error}
             </p>
           )}
-          {pngError && scramble.image && (
+          {pngError && scramble.image && !scramble.imageHidden && (
             <p className="mt-1 text-xs text-amber-600" role="status">
               打乱图渲染失败
             </p>
           )}
         </div>
 
-        {/* 操作按钮 */}
         <div className="flex shrink-0 items-center gap-1 self-start sm:self-center">
           <button
             type="button"
             className="btn btn-ghost btn-icon"
-            onClick={
-              showImage
-                ? toggleHidden
-                : () => {
-                    if (scramble.image) toggleHidden();
-                  }
-            }
-            title={showImage ? '隐藏打乱图' : '显示打乱图'}
-            aria-label={showImage ? '隐藏打乱图' : '显示打乱图'}
+            onClick={toggleHidden}
+            title={scramble.imageHidden ? '显示打乱图' : '隐藏打乱图'}
+            aria-label={scramble.imageHidden ? '显示打乱图' : '隐藏打乱图'}
             disabled={!scramble.image}
           >
-            {showImage ? <IconEyeOff size={16} /> : <IconEye size={16} />}
+            {scramble.imageHidden ? (
+              <IconEye size={16} />
+            ) : (
+              <IconEyeOff size={16} />
+            )}
           </button>
           <button
             type="button"
             className="btn btn-ghost btn-icon"
             onClick={editing ? () => setEditing(false) : startEdit}
-            title="编辑打乱"
+            title={scrambleLocked ? '计时中不可编辑打乱' : '编辑打乱'}
             aria-label="编辑打乱"
+            disabled={scrambleLocked}
           >
             <IconEdit size={16} />
           </button>
@@ -183,11 +167,14 @@ export function ScrambleBar() {
             type="button"
             className="btn btn-primary btn-icon"
             onClick={handleGenerate}
-            disabled={isLoading}
-            title="生成新打乱"
+            disabled={isLoading || scrambleLocked}
+            title={scrambleLocked ? '计时中不可刷新打乱' : '生成新打乱'}
             aria-label="生成新打乱"
           >
-            <IconRefresh size={16} className={isLoading ? 'animate-spin' : ''} />
+            <RefreshCw
+              size={16}
+              className={isLoading ? 'animate-spin' : undefined}
+            />
           </button>
         </div>
       </div>

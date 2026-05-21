@@ -3,7 +3,6 @@ import { useUIStore } from '@/store/uiStore';
 import { cn } from '@/lib/cn';
 import type { NodeColor } from '@/core/solution';
 import {
-  IconBracket,
   IconHash,
   IconPalette,
   IconPlus,
@@ -13,7 +12,6 @@ import {
 
 interface NodeActionsProps {
   nodeId: string;
-  bracketed: boolean;
   color: NodeColor;
   isOnlyTopLevel: boolean;
   onToggleAnnotation: () => void;
@@ -41,7 +39,6 @@ export function NodeActions({
   const addSiblingNode = useSessionStore((s) => s.addSiblingNode);
   const addShadowNode = useSessionStore((s) => s.addShadowNode);
   const deleteNode = useSessionStore((s) => s.deleteNode);
-  const toggleBracket = useSessionStore((s) => s.toggleBracket);
   const setNodeColor = useSessionStore((s) => s.setNodeColor);
   const insertPlaceholder = useSessionStore((s) => s.insertPlaceholder);
   const addInsertion = useSessionStore((s) => s.addInsertion);
@@ -57,10 +54,8 @@ export function NodeActions({
       const ph = '#';
       addInsertion(chain.id, { placeholder: ph });
       insertPlaceholder(nodeId, ph);
-    } else if (insertions.length > 1) {
-      openInsertionPicker({ nodeId, chainId: chain.id });
     } else {
-      insertPlaceholder(nodeId, insertions[0].placeholder);
+      openInsertionPicker({ nodeId, chainId: chain.id });
     }
   };
 
@@ -95,20 +90,12 @@ export function NodeActions({
         className="btn btn-ghost text-xs"
         onClick={handleInsert}
         title={
-          insertions.length > 1
-            ? '选择要插入的符号'
-            : '插入占位符'
+          insertions.length === 0
+            ? '插入占位符'
+            : '选择已有符号或新建插入'
         }
       >
         <IconHash size={12} /> 插入
-      </button>
-      <button
-        type="button"
-        className="btn btn-ghost text-xs"
-        onClick={() => toggleBracket(nodeId)}
-        title="为整段步骤加上或去掉外层括号（也可用键盘 ( ) 分段）"
-      >
-        <IconBracket size={12} /> 括号
       </button>
       <button
         type="button"

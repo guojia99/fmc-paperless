@@ -86,7 +86,7 @@ export function InsertionPicker() {
         </div>
 
         <p className="mb-3 text-xs text-slate-500">
-          当前有 {insertions.length} 个插入定义，请选择要插入到步骤中的符号。
+          点击已有符号插入到当前步骤，或新建一个插入定义。
         </p>
 
         <ul className="flex flex-col gap-2">

@@ -6,8 +6,13 @@ import {
   serializeForExport,
 } from '@/lib/persistence';
 import { IconDownload, IconUpload } from '@/components/common/Icons';
+import { cn } from '@/lib/cn';
 
-export function ExportButton() {
+interface ButtonProps {
+  labeled?: boolean;
+}
+
+export function ExportButton({ labeled }: ButtonProps) {
   const session = useSessionStore(selectActiveSession);
   const handleExport = () => {
     if (!session) return;
@@ -17,18 +22,19 @@ export function ExportButton() {
   return (
     <button
       type="button"
-      className="btn btn-icon"
+      className={cn(labeled ? 'btn w-full justify-start' : 'btn btn-icon')}
       onClick={handleExport}
       disabled={!session}
       title="导出当前会话"
       aria-label="导出"
     >
       <IconDownload size={16} />
+      {labeled && <span>导出会话 JSON</span>}
     </button>
   );
 }
 
-export function ImportButton() {
+export function ImportButton({ labeled }: ButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const importSession = useSessionStore((s) => s.importSession);
   const handlePick = () => inputRef.current?.click();
@@ -49,12 +55,13 @@ export function ImportButton() {
     <>
       <button
         type="button"
-        className="btn btn-icon"
+        className={cn(labeled ? 'btn w-full justify-start' : 'btn btn-icon')}
         onClick={handlePick}
         title="导入会话 JSON"
         aria-label="导入"
       >
         <IconUpload size={16} />
+        {labeled && <span>导入会话 JSON</span>}
       </button>
       <input
         ref={inputRef}
