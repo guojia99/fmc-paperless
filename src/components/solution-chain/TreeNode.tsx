@@ -43,6 +43,17 @@ export function TreeNodeRow({
   const [editingLabel, setEditingLabel] = useState(false);
   const [showAnnotation, setShowAnnotation] = useState(node.annotation.length > 0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const wasActiveRef = useRef(false);
+
+  useEffect(() => {
+    if (isActive && !wasActiveRef.current) {
+      requestAnimationFrame(() => {
+        rowRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    }
+    wasActiveRef.current = isActive;
+  }, [isActive]);
 
   useEffect(() => {
     if ((editingMoves || editingLabel) && inputRef.current) {
@@ -57,6 +68,7 @@ export function TreeNodeRow({
 
   return (
     <div
+      ref={rowRef}
       className={cn(
         'tree-node-row rounded-xl border p-2 transition-colors cursor-text',
         isActive

@@ -60,7 +60,10 @@ export function NodeActions({
   };
 
   return (
-    <div className="mt-1 flex flex-wrap items-center gap-1">
+    <div
+      className="mt-1 flex flex-wrap items-center gap-1"
+      onClick={(e) => e.stopPropagation()}
+    >
       <button
         type="button"
         className="btn btn-ghost text-xs"

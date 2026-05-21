@@ -418,6 +418,7 @@ export const useSessionStore = create<SessionState>()(
             updatedAt: Date.now(),
           })),
         );
+        useKeyboardStore.getState().showForInput();
         set({ cycling: { nodeId: null, state: resetCycling() } });
         return chain.id;
       },
@@ -634,6 +635,7 @@ export const useSessionStore = create<SessionState>()(
             activeNodeId: node.id,
           })),
         );
+        useKeyboardStore.getState().showForInput();
         set({ cycling: { nodeId: null, state: resetCycling() } });
         return node.id;
       },
@@ -652,6 +654,7 @@ export const useSessionStore = create<SessionState>()(
             activeNodeId: node.id,
           })),
         );
+        useKeyboardStore.getState().showForInput();
         set({ cycling: { nodeId: null, state: resetCycling() } });
         return node.id;
       },
@@ -673,6 +676,7 @@ export const useSessionStore = create<SessionState>()(
             activeNodeId: shadow.id,
           })),
         );
+        useKeyboardStore.getState().showForInput();
         set({ cycling: { nodeId: null, state: resetCycling() } });
         return shadow.id;
       },
