@@ -11,12 +11,20 @@ import { inverseMove, parseMoves, serializeMove } from '@/core/moves';
 export function buildShadowMoves(moves: string): string {
   const tokens = moves.trim().split(/\s+/).filter(Boolean);
   if (tokens.length === 0) return '';
-  const last = tokens[tokens.length - 1];
+
+  // Walk backwards to find the last move token, stripping trailing parens
+  let moveToken = tokens[tokens.length - 1];
+  let trailingClose = '';
+  while (moveToken.endsWith(')')) {
+    trailingClose = ')' + trailingClose;
+    moveToken = moveToken.slice(0, -1);
+  }
+
   try {
-    const parsed = parseMoves(last);
+    const parsed = parseMoves(moveToken);
     if (parsed.length === 0) return moves;
     const flipped = serializeMove(inverseMove(parsed[0]));
-    tokens[tokens.length - 1] = flipped;
+    tokens[tokens.length - 1] = flipped + trailingClose;
     return tokens.join(' ');
   } catch {
     return moves;

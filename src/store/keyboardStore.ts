@@ -32,6 +32,7 @@ interface KeyboardState {
   position: KeyboardPosition;
   /** Last docked layout position (never `hidden`). */
   lastLayoutPosition: Exclude<KeyboardPosition, 'hidden'>;
+  availableRows: KeyboardRow[];
 
   setPosition: (p: KeyboardPosition) => void;
   showForInput: () => void;
@@ -51,6 +52,7 @@ export const useKeyboardStore = create<KeyboardState>()(
       layout: DEFAULT_KEYBOARD_LAYOUT,
       position: 'hidden',
       lastLayoutPosition: 'bottom',
+      availableRows: OPTIONAL_ROWS.map(cloneRow),
 
       setPosition: (p) =>
         set((s) => {
@@ -91,19 +93,26 @@ export const useKeyboardStore = create<KeyboardState>()(
         set((s) => ({ layout: { ...s.layout, rows: rows.slice(0, MAX_ROWS) } })),
 
       addOptionalRow: (templateId) => {
-        const template = OPTIONAL_ROWS.find((r) => r.id === templateId);
-        if (!template) return;
-        const rows = get().layout.rows;
-        if (rows.length >= MAX_ROWS) return;
-        set((s) => ({
-          layout: { ...s.layout, rows: [...s.layout.rows, cloneRow(template)] },
-        }));
+        const s = get();
+        const candidate = s.availableRows.find((r) => r.id === templateId);
+        if (!candidate) return;
+        if (s.layout.rows.length >= MAX_ROWS) return;
+        set({
+          layout: { ...s.layout, rows: [...s.layout.rows, cloneRow(candidate)] },
+          availableRows: s.availableRows.filter((r) => r.id !== templateId),
+        });
       },
 
-      removeRow: (rowId) =>
-        set((s) => ({
+      removeRow: (rowId) => {
+        const s = get();
+        const removed = s.layout.rows.find((r) => r.id === rowId);
+        if (!removed) return;
+        const returned = cloneRow(removed);
+        set({
           layout: { ...s.layout, rows: s.layout.rows.filter((r) => r.id !== rowId) },
-        })),
+          availableRows: [...s.availableRows, returned],
+        });
+      },
 
       moveRow: (rowId, direction) =>
         set((s) => {
@@ -121,6 +130,7 @@ export const useKeyboardStore = create<KeyboardState>()(
           layout: DEFAULT_KEYBOARD_LAYOUT,
           position: 'hidden',
           lastLayoutPosition: 'bottom',
+          availableRows: OPTIONAL_ROWS.map(cloneRow),
         }),
     }),
     {
@@ -129,6 +139,7 @@ export const useKeyboardStore = create<KeyboardState>()(
         layout: s.layout,
         position: s.position,
         lastLayoutPosition: s.lastLayoutPosition,
+        availableRows: s.availableRows,
       }),
     },
   ),

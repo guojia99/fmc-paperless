@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { OPTIONAL_ROWS, useKeyboardStore } from '@/store/keyboardStore';
+import { useKeyboardStore } from '@/store/keyboardStore';
 import type { KeyboardPosition } from '@/store/keyboardStore';
 import { cn } from '@/lib/cn';
 import {
@@ -29,6 +29,7 @@ export function KeyboardConfigurator() {
   const moveRow = useKeyboardStore((s) => s.moveRow);
   const reset = useKeyboardStore((s) => s.reset);
   const close = useUIStore((s) => s.setConfiguringKeyboard);
+  const availableRows = useKeyboardStore((s) => s.availableRows);
 
   const canAddRow = layout.rows.length < 6;
 
@@ -146,7 +147,7 @@ export function KeyboardConfigurator() {
         <div>
           <div className="mb-1 text-xs text-slate-500">添加常用行</div>
           <div className="flex flex-wrap gap-2">
-            {OPTIONAL_ROWS.map((r) => (
+            {availableRows.map((r) => (
               <button
                 key={r.id}
                 type="button"

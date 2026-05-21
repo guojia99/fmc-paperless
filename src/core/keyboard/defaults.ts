@@ -17,15 +17,15 @@ export const DEFAULT_KEYBOARD_LAYOUT: KeyboardLayout = {
       ],
     },
     {
-      id: 'prime',
+      id: 'wide',
       isVisible: true,
       keys: [
-        { id: 'rp', label: "R'", action: "R'", type: 'move', variantGroup: 'R' },
-        { id: 'lp', label: "L'", action: "L'", type: 'move', variantGroup: 'L' },
-        { id: 'up', label: "U'", action: "U'", type: 'move', variantGroup: 'U' },
-        { id: 'dp', label: "D'", action: "D'", type: 'move', variantGroup: 'D' },
-        { id: 'fp', label: "F'", action: "F'", type: 'move', variantGroup: 'F' },
-        { id: 'bp', label: "B'", action: "B'", type: 'move', variantGroup: 'B' },
+        { id: 'rw', label: 'Rw', action: 'Rw', type: 'move', variantGroup: 'R' },
+        { id: 'lw', label: 'Lw', action: 'Lw', type: 'move', variantGroup: 'L' },
+        { id: 'uw', label: 'Uw', action: 'Uw', type: 'move', variantGroup: 'U' },
+        { id: 'dw', label: 'Dw', action: 'Dw', type: 'move', variantGroup: 'D' },
+        { id: 'fw', label: 'Fw', action: 'Fw', type: 'move', variantGroup: 'F' },
+        { id: 'bw', label: 'Bw', action: 'Bw', type: 'move', variantGroup: 'B' },
       ],
     },
     {
@@ -55,15 +55,15 @@ export const DEFAULT_KEYBOARD_LAYOUT: KeyboardLayout = {
 
 export const OPTIONAL_ROWS: KeyboardRow[] = [
   {
-    id: 'wide',
+    id: 'prime',
     isVisible: false,
     keys: [
-      { id: 'rw', label: 'Rw', action: 'Rw', type: 'move', variantGroup: 'R' },
-      { id: 'lw', label: 'Lw', action: 'Lw', type: 'move', variantGroup: 'L' },
-      { id: 'uw', label: 'Uw', action: 'Uw', type: 'move', variantGroup: 'U' },
-      { id: 'dw', label: 'Dw', action: 'Dw', type: 'move', variantGroup: 'D' },
-      { id: 'fw', label: 'Fw', action: 'Fw', type: 'move', variantGroup: 'F' },
-      { id: 'bw', label: 'Bw', action: 'Bw', type: 'move', variantGroup: 'B' },
+      { id: 'rp', label: "R'", action: "R'", type: 'move', variantGroup: 'R' },
+      { id: 'lp', label: "L'", action: "L'", type: 'move', variantGroup: 'L' },
+      { id: 'up', label: "U'", action: "U'", type: 'move', variantGroup: 'U' },
+      { id: 'dp', label: "D'", action: "D'", type: 'move', variantGroup: 'D' },
+      { id: 'fp', label: "F'", action: "F'", type: 'move', variantGroup: 'F' },
+      { id: 'bp', label: "B'", action: "B'", type: 'move', variantGroup: 'B' },
     ],
   },
   {

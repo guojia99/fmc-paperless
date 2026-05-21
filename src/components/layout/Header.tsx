@@ -3,12 +3,14 @@ import { Settings } from 'lucide-react';
 import { Timer } from '@/components/timer/Timer';
 import { SessionsMenu } from '@/components/sessions/SessionsMenu';
 import { SettingsModal } from '@/components/settings/SettingsModal';
+import { HelpGuide } from '@/components/settings/HelpGuide';
 import { IconGithub } from '@/components/common/Icons';
 
 const GITHUB_URL = 'https://github.com/guojia99/fmc-paperless';
 
 export function Header() {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   return (
     <>
@@ -38,6 +40,15 @@ export function Header() {
             <button
               type="button"
               className="btn btn-icon"
+              onClick={() => setHelpOpen(true)}
+              title="使用指南"
+              aria-label="使用指南"
+            >
+              ?
+            </button>
+            <button
+              type="button"
+              className="btn btn-icon"
               onClick={() => setSettingsOpen(true)}
               title="设置"
               aria-label="设置"
@@ -50,6 +61,10 @@ export function Header() {
       <SettingsModal
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
+      />
+      <HelpGuide
+        open={helpOpen}
+        onClose={() => setHelpOpen(false)}
       />
     </>
   );
