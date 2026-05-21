@@ -34,14 +34,14 @@ export function SessionsMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const [menuPos, setMenuPos] = useState<{ top: number; left: number; right: number }>({ top: 0, left: 0, right: 0 });
+  const [menuPos, setMenuPos] = useState<{ top: number; right: number }>({ top: 0, right: 0 });
 
   useEffect(() => {
     if (!open) return;
     const btnEl = ref.current?.querySelector('button');
     if (!btnEl) return;
     const rect = btnEl.getBoundingClientRect();
-    setMenuPos({ top: rect.bottom + 4, left: rect.left, right: window.innerWidth - rect.right });
+    setMenuPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
   }, [open]);
 
   useEffect(() => {
@@ -85,8 +85,8 @@ export function SessionsMenu() {
       {open && typeof document !== 'undefined' && createPortal(
         <div
           ref={menuRef}
-          className="fixed z-50 w-80 max-h-[60vh] overflow-auto rounded-xl border border-primary-100 bg-white p-2 shadow-lg"
-          style={{ top: menuPos.top, left: menuPos.left, right: menuPos.right }}
+          className="fixed z-50 w-80 max-w-[calc(100vw-1rem)] overflow-auto rounded-xl border border-primary-100 bg-white p-2 shadow-lg"
+          style={{ top: menuPos.top, right: menuPos.right }}
         >
           <button
             type="button"
